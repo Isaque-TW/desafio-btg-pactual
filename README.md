@@ -42,9 +42,7 @@ cd ..
 ```
 
 ### Acesso para API no OpenAPI - Swagger
-```bash
 https://localhost:8080/swagger-ui/index.html
-```
 
 #### Dica (MongoDB Compass)
 ```bash
