@@ -41,7 +41,7 @@ cd ..
 ./mvnw verify target/site/jacoco/index.html
 ```
 
-### Acesso para API no OpenAPI - Swagger
+### Acesso para API no OpenAPI - Swagger:
 https://localhost:8080/swagger-ui/index.html
 
 #### Dica (MongoDB Compass)
@@ -49,9 +49,9 @@ https://localhost:8080/swagger-ui/index.html
 Após `docker compose up -d` em `local/`, conecte no Compass com:
 - Connection: `mongodb://localhost:27017`
 - Authentication
-Username: admin
-Password: 123
-____________________________________________________________
+- Username: admin
+- Password: 123
+__________________________________________________________________________
 
 Decisões de Projeto (o “porquê” das escolhas)
 1) Strategy + Factory para validação por tipo de chave
