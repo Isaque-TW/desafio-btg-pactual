@@ -59,14 +59,11 @@ __________________________________________________________________________
 
 - **Contexto:** cada tipo de chave (EMAIL, PHONE, CPF, CNPJ, RANDOM) possui regras de validação próprias.
 - **Problema:** sem uma estratégia clara, seria necessário um `if/switch` no `service`, o que viola princípios de design (acoplamento alto e difícil manutenção).
-- **Escolha:** adotamos o **Design Pattern Strategy**, onde cada tipo de chave tem seu validador especializado, entregue por uma **Factory**.
+- **Escolha:** optei pelo **Design Pattern Strategy**, onde cada tipo de chave tem seu validador especializado, entregue por uma **Factory**.
 - **Por que essa estratégia?**
   - Facilita **extensão**: adicionar um novo tipo não exige mexer nos outros (`OCP` – Open/Closed Principle).
   - Permite **testabilidade isolada**: cada validador é testado de forma independente.
   - Evita código procedural espalhado no `service`.
-- **Alternativas consideradas:**
-  - Colocar lógica em `if/else` → baixa manutenibilidade.
-  - Anotações customizadas de validação (`@Constraint`) → funcionam para casos simples, mas não escalam bem com múltiplos tipos e regras mais complexas.
 - 🔗 **Referência:** [Refactoring Guru – Strategy Pattern](https://refactoring.guru/design-patterns/strategy)
 
 ---
