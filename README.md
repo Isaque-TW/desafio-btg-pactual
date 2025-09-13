@@ -43,7 +43,7 @@ cd ..
 
 ### Acesso para API no OpenAPI - Swagger:
 https://localhost:8080/swagger-ui/index.html
-
+```
 #### Dica (MongoDB Compass)
 
 Após `docker compose up -d` em `local/`, conecte no Compass com:
