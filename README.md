@@ -19,29 +19,29 @@ ________________________________________________________________________________
 
 ### Dev (subir app + Mongo local)
 
-# 1) Banco local
+### 1) Banco local
 ```bash
 cd local
 docker compose up -d
 ```
 
-# 2) App
+### 2) Aplicação 
 ```bash
 cd ..
 ./mvnw spring-boot:run
 ```
 
-# todos os testes (unit + integração com Testcontainers)
+### Todos os testes (unit + integração com Testcontainers)
 ```bash
 ./mvnw test
 ```
 
-# rodar e abrir relatório de cobertura (JaCoCo) 
+### Rodar e abrir relatório de cobertura (JaCoCo) 
 ```bash
 ./mvnw verify target/site/jacoco/index.html
 ```
 
-### Acesso rápido
+### Acesso para API no OpenAPI - Swagger
 ```bash
 - Swagger UI: http://localhost:8080/swagger-ui/index.html
 ```
