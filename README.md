@@ -56,30 +56,35 @@ __________________________________________________________________________
 ## Decisões de Projeto
 
 ### 1. Strategy + Factory (validação por tipo de chave)
-- **Problema:** cada tipo (EMAIL, PHONE, CPF, CNPJ, RANDOM) tem regras próprias.
-- **Solução:** uma *Strategy* por tipo, entregue via *Factory*.
-- **Benefícios:**
-  - Evita `if/switch` no service.
-  - Aplica OCP (novo tipo sem tocar nos outros).
-  - Regras testáveis isoladamente.
-- 🔗 Referência: [Refactoring Guru](https://refactoring.guru)
+
+- **Contexto:** cada tipo de chave (EMAIL, PHONE, CPF, CNPJ, RANDOM) possui regras de validação próprias.
+- **Problema:** sem uma estratégia clara, seria necessário um `if/switch` no `service`, o que viola princípios de design (acoplamento alto e difícil manutenção).
+- **Escolha:** adotamos o **Design Pattern Strategy**, onde cada tipo de chave tem seu validador especializado, entregue por uma **Factory**.
+- **Por que essa estratégia?**
+  - Facilita **extensão**: adicionar um novo tipo não exige mexer nos outros (`OCP` – Open/Closed Principle).
+  - Permite **testabilidade isolada**: cada validador é testado de forma independente.
+  - Evita código procedural espalhado no `service`.
+- **Alternativas consideradas:**
+  - Colocar lógica em `if/else` → baixa manutenibilidade.
+  - Anotações customizadas de validação (`@Constraint`) → funcionam para casos simples, mas não escalam bem com múltiplos tipos e regras mais complexas.
+- 🔗 **Referência:** [Refactoring Guru – Strategy Pattern](https://refactoring.guru/design-patterns/strategy)
 
 ---
 
-### 2. Specification-like (Criteria)
-- **Problema:** filtros variáveis (tipo, agência+conta, nome, datas).
-- **Solução:** Query com `Criteria` via `MongoTemplate`.
-- **Benefícios:**
-  - Regras centralizadas.
-  - Reuso e legibilidade sem “spaghetti” no repositório.
+## 2. Specification-like (Criteria para consultas combináveis)
 
----
+- **Contexto:** consultas precisam de filtros variáveis (tipo, agência+conta, nome, datas).
+- **Problema:** no **JPA** existe `JpaSpecificationExecutor` para compor filtros, mas no **MongoDB** não há suporte nativo ao padrão Specification.
+- **Escolha:** implementamos uma abordagem *Specification-like* usando `Criteria` do `MongoTemplate`.
+- **Por que essa estratégia?**
+  - Permite **composição dinâmica** de filtros (como no padrão Specification).
+  - Centraliza regras de filtragem, aumentando **clareza e reuso**.
+  - Evita “spaghetti” de `if/else` para montar queries no repositório.
+- **Alternativas consideradas:**
+  - Criar métodos fixos no repositório (`findByTypeAndDateBetween...`) → explode em complexidade conforme aumenta a quantidade de filtros.
+  - Montar consultas manuais com `Query` + condicionais → difícil de manter e pouco legível.
+- **Benefício adicional:** mantemos a ideia de *Specification Pattern* do DDD e do [Refactoring Guru](https://refactoring.guru/design-patterns/specification), mas adaptada ao ecossistema MongoDB.
 
-### 3. Problem Details (RFC-7807)
-- **400:** validação (Bean Validation).
-- **404:** recurso inexistente.
-- **422:** violações de negócio (duplicidade, limite, chave inativa).
-- **Benefício:** respostas padronizadas e previsíveis.
 
 ---
 
