@@ -18,26 +18,36 @@ ________________________________________________________________________________
 - *(Opcional)* **MongoDB Compass** – para inspecionar o banco em desenvolvimento
 
 ### Dev (subir app + Mongo local)
-```bash
+
 # 1) Banco local
+```bash
 cd local
 docker compose up -d
 ```
 
 # 2) App
+```bash
 cd ..
 ./mvnw spring-boot:run
+```
 
 # todos os testes (unit + integração com Testcontainers)
+```bash
 ./mvnw test
+```
 
 # rodar e abrir relatório de cobertura (JaCoCo) 
+```bash
 ./mvnw verify target/site/jacoco/index.html
+```
 
 ### Acesso rápido
+```bash
 - Swagger UI: http://localhost:8080/swagger-ui/index.html
+```
 
 #### Dica (MongoDB Compass)
+```bash
 Após `docker compose up -d` em `local/`, conecte no Compass com:
 - Connection: `mongodb://localhost:27017`
 - Authentication
