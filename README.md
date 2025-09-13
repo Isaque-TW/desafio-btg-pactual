@@ -43,7 +43,7 @@ cd ..
 
 ### Acesso para API no OpenAPI - Swagger:
 https://localhost:8080/swagger-ui/index.html
-```
+
 #### Dica (MongoDB Compass)
 
 Após `docker compose up -d` em `local/`, conecte no Compass com:
@@ -53,7 +53,7 @@ Após `docker compose up -d` em `local/`, conecte no Compass com:
 - Password: 123
 __________________________________________________________________________
 
-Decisões de Projeto (o “porquê” das escolhas)
+## Decisões de Projeto (o “porquê” das escolhas)
 1) Strategy + Factory para validação por tipo de chave
 
 Problema: cada tipo (EMAIL/PHONE/CPF/CNPJ/RANDOM) tem regras próprias.
