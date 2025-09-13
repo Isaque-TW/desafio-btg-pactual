@@ -45,13 +45,12 @@ cd ..
 https://localhost:8080/swagger-ui/index.html
 
 #### Dica (MongoDB Compass)
-```bash
+
 Após `docker compose up -d` em `local/`, conecte no Compass com:
 - Connection: `mongodb://localhost:27017`
 - Authentication
 Username: admin
 Password: 123
-```
 ____________________________________________________________
 
 Decisões de Projeto (o “porquê” das escolhas)
