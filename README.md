@@ -53,48 +53,36 @@ Após `docker compose up -d` em `local/`, conecte no Compass com:
 - Password: 123
 __________________________________________________________________________
 
-## Decisões de Projeto (o “porquê” das escolhas)
-1) Strategy + Factory para validação por tipo de chave
+## Decisões de Projeto
 
-Problema: cada tipo (EMAIL/PHONE/CPF/CNPJ/RANDOM) tem regras próprias.
+### 1. Strategy + Factory (validação por tipo de chave)
+- **Problema:** cada tipo (EMAIL, PHONE, CPF, CNPJ, RANDOM) tem regras próprias.
+- **Solução:** uma *Strategy* por tipo, entregue via *Factory*.
+- **Benefícios:**
+  - Evita `if/switch` no service.
+  - Aplica OCP (novo tipo sem tocar nos outros).
+  - Regras testáveis isoladamente.
+- 🔗 Referência: [Refactoring Guru](https://refactoring.guru)
 
-Solução: uma Strategy por tipo (validadores especializados) entregue por uma Factory.
+---
 
-Benefícios: elimina if/switch no service, aplica OCP (adicionar novo tipo sem tocar nos outros), deixa a regra testável isoladamente.
+### 2. Specification-like (Criteria)
+- **Problema:** filtros variáveis (tipo, agência+conta, nome, datas).
+- **Solução:** Query com `Criteria` via `MongoTemplate`.
+- **Benefícios:**
+  - Regras centralizadas.
+  - Reuso e legibilidade sem “spaghetti” no repositório.
 
-**Referência:** https://refactoring.guru/
+---
 
-2) Specification-like (Criteria) para consultas combináveis
+### 3. Problem Details (RFC-7807)
+- **400:** validação (Bean Validation).
+- **404:** recurso inexistente.
+- **422:** violações de negócio (duplicidade, limite, chave inativa).
+- **Benefício:** respostas padronizadas e previsíveis.
 
-Problema: filtros variáveis (tipo, agência+conta, nome, datas), e no Mongo não há JpaSpecification.
+---
 
-Solução: construção de Query com Criteria via MongoTemplate.
-
-Benefícios: regras de combinação centralizadas, reuso e legibilidade sem “if spaghetti” em repositório.
-
-3) Problem Details (RFC-7807) para erros
-
-400: validação (Bean Validation) com mapa fields.
-
-404: recurso inexistente.
-
-422: violações de negócio (duplicidade, limite, chave inativa etc.).
-
-Benefício: respostas padronizadas e previsíveis para o consumidor.
-
-4) Domínio enxuto e seguro
-
-Entidade PixKey imutável (trocas geram novo snapshot) com transições controladas (inactivate, updateAccount).
-
-Guard-clauses no domínio evitam estados inválidos (ex.: dupla inativação).
-
-5) Testes de verdade
-
-Unitários (service, domínio, validadores): cobrem fluxos felizes e de erro.
-
-Integração com Mongo real (Testcontainers): garante índices, conversões e comportamento do driver no mundo real.
-
-Cobertura: linhas ~98% / branches ≥90% (JaCoCo).
 ____________________________________________________________________________________________________
 ### Quando cada status é retornado
 
