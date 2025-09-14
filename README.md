@@ -68,18 +68,37 @@ __________________________________________________________________________
 
 ---
 
-## 2. Specification-like (Criteria para consultas combináveis)
+## 2. Banco de Dados — MongoDB (por quê?)
+
+**Contexto.** O domínio de PixKey é naturalmente “document-like”: os JSONs de entrada/saída mapeiam 1-para-1 para a entidade persistida e não há necessidade de *joins* entre múltiplas tabelas.
+
+**Motivação.**
+- **Modelo orientado a documento (JSON-first):** a estrutura dos dados da API (JSON) é salva de forma quase idêntica no banco de dados, eliminando a necessidade de tradução entre eles.
+- **Schema flexível:** adicionamos campos no tempo sem migrações SQL (mudanças são tratadas no domínio/DTOs).
+- **Índices simples e eficientes:** 
+  - **Unicidade global da chave** (`keyValue`) garantida por índice único.
+  - **Consultas frequentes** (ex.: por `agency+account`, `status`) atendidas com índices compostos.
+- **Developer-experience:** Spring Data MongoDB + Docker/Testcontainers tornam o *setup* local e os testes de integração limpos e simples de implementar.
+
+**Trade-offs.**
+- **Sem `JpaSpecificationExecutor`:** o Spring Data MongoDB não tem Specification nativo.
+  - **Mitigação:** usamos um **Specification-like** com `MongoTemplate` + `Criteria` (seção 3).
+- **Sem *joins* relacionais:** modelagem deve favorecer *aggregation by document*
+
+**Modelagem & Índice**
+- Índice único para `keyValue` (garante regra de unicidade global).
+- Índice composto para consultas por conta/estado:
+  - `{ agency: 1, account: 1, status: 1 }` (ajuda nas telas/relatórios por conta).
+
+## 3. Specification-like (Criteria para consultas combináveis)
 
 - **Contexto:** consultas precisam de filtros variáveis (tipo, agência+conta, nome, datas).
 - **Problema:** no **JPA** existe `JpaSpecificationExecutor` para compor filtros, mas no **MongoDB** não há suporte nativo ao padrão Specification.
-- **Escolha:** implementamos uma abordagem *Specification-like* usando `Criteria` do `MongoTemplate`.
+- **Escolha:** implementar uma abordagem *Specification-like* usando `Criteria` do `MongoTemplate`.
 - **Por que essa estratégia?**
   - Permite **composição dinâmica** de filtros (como no padrão Specification).
   - Centraliza regras de filtragem, aumentando **clareza e reuso**.
   - Evita “spaghetti” de `if/else` para montar queries no repositório.
-- **Alternativas consideradas:**
-  - Criar métodos fixos no repositório (`findByTypeAndDateBetween...`) → explode em complexidade conforme aumenta a quantidade de filtros.
-  - Montar consultas manuais com `Query` + condicionais → difícil de manter e pouco legível.
 - **Benefício adicional:** mantemos a ideia de *Specification Pattern* do DDD e do [Refactoring Guru](https://refactoring.guru/design-patterns/specification), mas adaptada ao ecossistema MongoDB.
 
 
