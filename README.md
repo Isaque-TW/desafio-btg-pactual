@@ -59,11 +59,11 @@ __________________________________________________________________________
 
 - **Contexto:** cada tipo de chave (EMAIL, PHONE, CPF, CNPJ, RANDOM) possui regras de validação próprias.
 - **Problema:** sem uma estratégia clara, seria necessário um `if/switch` no `service`, o que viola princípios de design (acoplamento alto e difícil manutenção).
-- **Escolha:** optei pelo **Design Pattern Strategy**, onde cada tipo de chave tem seu validador especializado, entregue por uma **Factory**.
+- **Escolha:** apliquei **Strategy**, onde cada tipo de chave tem seu **KeyValidator** especializado, A seleção da estratégia fica numa Factory **(KeyValidatorFactory)**, evitando espalhar new ...Validator() pelo código.
 - **Por que essa estratégia?**
   - Facilita **extensão**: adicionar um novo tipo não exige mexer nos outros (`OCP` – Open/Closed Principle).
-  - Permite **testabilidade isolada**: cada validador é testado de forma independente.
-  - Evita código procedural espalhado no `service`.
+  - Permite **testabilidade isolada**: cada validador é testado de forma independente; no `service`, podemos “mockar” a factory.
+  - Código limpo: nada de if/else ou switch no fluxo de negócio.
 - 🔗 **Referência:** [Refactoring Guru – Strategy Pattern](https://refactoring.guru/design-patterns/strategy)
 
 ---
@@ -83,7 +83,7 @@ __________________________________________________________________________
 **Trade-offs.**
 - **Sem `JpaSpecificationExecutor`:** o Spring Data MongoDB não tem Specification nativo.
   - **Mitigação:** usamos um **Specification-like** com `MongoTemplate` + `Criteria` (seção 3).
-- **Sem *joins* relacionais:** modelagem deve favorecer *aggregation by document*
+- **Sem *joins* relacionais:** modelagem deve favorecer **aggregation by document**
 
 **Modelagem & Índice**
 - Índice único para `keyValue` (garante regra de unicidade global).
@@ -138,7 +138,5 @@ ________________________________________________________________________________
   - ao mover para **outra** conta, o destino já possui **>= 5** chaves.
 
 > **Observação:** a API **não expõe `DELETE`**. A remoção lógica é feita via **PATCH `/inactivate`**. Uma chamada `DELETE /pix-keys/{id}` resultará em **405 Method Not Allowed**.
-
-Acesse:
 
 Swagger UI: http://localhost:8080/swagger-ui/index.html
